@@ -39,14 +39,14 @@ import LoggedOutForm from './auth-logged-out-form';
 class JetpackConnectAuthorizeForm extends Component {
 	static propTypes = {
 		authAttempts: PropTypes.number,
-		calypsoStartedConnection: PropTypes.bool,
-		isAlreadyOnSitesList: PropTypes.bool,
-		isFetchingAuthorizationSite: PropTypes.bool,
-		isFetchingSites: PropTypes.bool,
 		authorizationRemoteQueryData: PropTypes.shape( {
 			client_id: PropTypes.string,
 			from: PropTypes.string,
 		} ).isRequired,
+		calypsoStartedConnection: PropTypes.bool,
+		isAlreadyOnSitesList: PropTypes.bool,
+		isFetchingAuthorizationSite: PropTypes.bool,
+		isFetchingSites: PropTypes.bool,
 		recordTracksEvent: PropTypes.func,
 		setTracksAnonymousUserId: PropTypes.func,
 		requestHasExpiredSecretError: PropTypes.func,
@@ -152,11 +152,11 @@ export default connect(
 
 		return {
 			authAttempts: getAuthAttempts( state, siteSlug ),
+			authorizationRemoteQueryData: getAuthorizationRemoteQueryData( state ),
 			calypsoStartedConnection: isCalypsoStartedConnection( state, remoteSiteUrl ),
 			isAlreadyOnSitesList: isRemoteSiteOnSitesList( state ),
 			isFetchingAuthorizationSite: isRequestingSite( state, siteId ),
 			isFetchingSites: isRequestingSites( state ),
-			authorizationRemoteQueryData: getAuthorizationRemoteQueryData( state ),
 			requestHasExpiredSecretError,
 			requestHasXmlrpcError,
 			siteSlug,

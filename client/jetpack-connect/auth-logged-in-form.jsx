@@ -54,12 +54,6 @@ const debug = debugModule( 'calypso:jetpack-connect:authorize-form' );
 class LoggedInForm extends Component {
 	static propTypes = {
 		authAttempts: PropTypes.number.isRequired,
-		calypsoStartedConnection: PropTypes.bool,
-		isAlreadyOnSitesList: PropTypes.bool,
-		isFetchingSites: PropTypes.bool,
-		isFetchingAuthorizationSite: PropTypes.bool,
-		isSSO: PropTypes.bool,
-		isWoo: PropTypes.bool,
 		authorizationData: PropTypes.shape( {
 			authorizeError: PropTypes.oneOfType( [ PropTypes.object, PropTypes.bool ] ),
 			authorizeSuccess: PropTypes.bool,
@@ -72,6 +66,12 @@ class LoggedInForm extends Component {
 			} ).isRequired,
 			siteReceived: PropTypes.bool,
 		} ).isRequired,
+		calypsoStartedConnection: PropTypes.bool,
+		isAlreadyOnSitesList: PropTypes.bool,
+		isFetchingSites: PropTypes.bool,
+		isFetchingAuthorizationSite: PropTypes.bool,
+		isSSO: PropTypes.bool,
+		isWoo: PropTypes.bool,
 		requestHasExpiredSecretError: PropTypes.func.isRequired,
 		requestHasXmlrpcError: PropTypes.func.isRequired,
 		siteSlug: PropTypes.string.isRequired,
