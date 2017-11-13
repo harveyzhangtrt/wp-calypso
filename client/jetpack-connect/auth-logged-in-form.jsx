@@ -33,6 +33,7 @@ import Spinner from 'components/spinner';
 import userUtilities from 'lib/user/utils';
 import { decodeEntities } from 'lib/formatting';
 import { externalRedirect } from 'lib/route/path';
+import { getAuthorizationData } from 'state/jetpack-connect/selectors';
 import { getJetpackConnectRedirectAfterAuth } from 'state/selectors';
 import { login } from 'lib/paths';
 import { recordTracksEvent as recordTracksEventAction } from 'state/analytics/actions';
@@ -59,7 +60,7 @@ class LoggedInForm extends Component {
 		isFetchingAuthorizationSite: PropTypes.bool,
 		isSSO: PropTypes.bool,
 		isWoo: PropTypes.bool,
-		jetpackConnectAuthorize: PropTypes.shape( {
+		authorizationData: PropTypes.shape( {
 			authorizeError: PropTypes.oneOfType( [ PropTypes.object, PropTypes.bool ] ),
 			authorizeSuccess: PropTypes.bool,
 			isRedirectingToWpAdmin: PropTypes.bool,
@@ -90,7 +91,7 @@ class LoggedInForm extends Component {
 
 	componentWillMount() {
 		const { authorize, recordTracksEvent } = this.props;
-		const { queryObject, autoAuthorize } = this.props.jetpackConnectAuthorize;
+		const { queryObject, autoAuthorize } = this.props.authorizationData;
 		recordTracksEvent( 'calypso_jpc_auth_view' );
 
 		const doAutoAuthorize =
@@ -117,7 +118,7 @@ class LoggedInForm extends Component {
 			isRedirectingToWpAdmin,
 			authorizeSuccess,
 			authorizeError,
-		} = nextProps.jetpackConnectAuthorize;
+		} = nextProps.authorizationData;
 
 		// For SSO, WooCommerce Services, and JPO users, do not display plans page
 		// Instead, redirect back to admin as soon as we're connected
@@ -149,7 +150,7 @@ class LoggedInForm extends Component {
 
 	redirect() {
 		const { goBackToWpAdmin, redirectAfterAuth } = this.props;
-		const { queryObject } = this.props.jetpackConnectAuthorize;
+		const { queryObject } = this.props.authorizationData;
 
 		if ( this.props.isSSO || this.props.isWoo || this.isFromJpo( this.props ) ) {
 			debug(
@@ -166,7 +167,7 @@ class LoggedInForm extends Component {
 	}
 
 	isFromJpo( props ) {
-		return startsWith( get( props, [ 'jetpackConnectAuthorize', 'queryObject', 'from' ] ), 'jpo' );
+		return startsWith( get( props, [ 'authorizationData', 'queryObject', 'from' ] ), 'jpo' );
 	}
 
 	handleClickDisclaimer = () => {
@@ -179,7 +180,7 @@ class LoggedInForm extends Component {
 
 	handleSignOut = () => {
 		const { recordTracksEvent } = this.props;
-		const { queryObject } = this.props.jetpackConnectAuthorize;
+		const { queryObject } = this.props.authorizationData;
 		const redirect = addQueryArgs( queryObject, window.location.href );
 		recordTracksEvent( 'calypso_jpc_signout_click' );
 		userUtilities.logout( redirect );
@@ -187,7 +188,7 @@ class LoggedInForm extends Component {
 
 	handleResolve = () => {
 		const { goToXmlrpcErrorFallbackUrl, recordTracksEvent } = this.props;
-		const { queryObject, authorizationCode } = this.props.jetpackConnectAuthorize;
+		const { queryObject, authorizationCode } = this.props.authorizationData;
 		const authUrl = '/wp-admin/admin.php?page=jetpack&connect_url_redirect=true';
 		this.retryingAuth = false;
 		if ( this.props.requestHasExpiredSecretError() ) {
@@ -206,7 +207,7 @@ class LoggedInForm extends Component {
 
 	handleSubmit = () => {
 		const { authorize, goBackToWpAdmin, recordTracksEvent, redirectAfterAuth } = this.props;
-		const { queryObject, authorizeError, authorizeSuccess } = this.props.jetpackConnectAuthorize;
+		const { queryObject, authorizeError, authorizeSuccess } = this.props.authorizationData;
 
 		if (
 			! this.props.isAlreadyOnSitesList &&
@@ -240,12 +241,12 @@ class LoggedInForm extends Component {
 	};
 
 	isAuthorizing() {
-		const { isAuthorizing } = this.props.jetpackConnectAuthorize;
+		const { isAuthorizing } = this.props.authorizationData;
 		return ! this.props.isAlreadyOnSitesList && isAuthorizing;
 	}
 
 	renderErrorDetails() {
-		const { authorizeError } = this.props.jetpackConnectAuthorize;
+		const { authorizeError } = this.props.authorizationData;
 		return (
 			<div className="jetpack-connect__error-details">
 				<FormLabel>{ this.props.translate( 'Error Details' ) }</FormLabel>
@@ -298,7 +299,7 @@ class LoggedInForm extends Component {
 			isAuthorizing,
 			authorizeSuccess,
 			userAlreadyConnected,
-		} = this.props.jetpackConnectAuthorize;
+		} = this.props.authorizationData;
 		if (
 			queryObject.already_authorized &&
 			! this.props.isFetchingSites &&
@@ -359,7 +360,7 @@ class LoggedInForm extends Component {
 			authorizeSuccess,
 			isRedirectingToWpAdmin,
 			authorizeError,
-		} = this.props.jetpackConnectAuthorize;
+		} = this.props.authorizationData;
 
 		if (
 			! this.props.isAlreadyOnSitesList &&
@@ -402,7 +403,7 @@ class LoggedInForm extends Component {
 	}
 
 	getDisclaimerText() {
-		const { queryObject } = this.props.jetpackConnectAuthorize;
+		const { queryObject } = this.props.authorizationData;
 		const { blogname } = queryObject;
 
 		const detailsLink = (
@@ -432,7 +433,7 @@ class LoggedInForm extends Component {
 
 	getUserText() {
 		const { translate } = this.props;
-		const { authorizeSuccess } = this.props.jetpackConnectAuthorize;
+		const { authorizeSuccess } = this.props.authorizationData;
 		let text = translate( 'Connecting as {{strong}}%(user)s{{/strong}}', {
 			args: { user: this.props.user.display_name },
 			components: { strong: <strong /> },
@@ -449,7 +450,7 @@ class LoggedInForm extends Component {
 	}
 
 	isWaitingForConfirmation() {
-		const { isAuthorizing, authorizeSuccess, siteReceived } = this.props.jetpackConnectAuthorize;
+		const { isAuthorizing, authorizeSuccess, siteReceived } = this.props.authorizationData;
 		return ! ( isAuthorizing || authorizeSuccess || siteReceived );
 	}
 
@@ -464,7 +465,7 @@ class LoggedInForm extends Component {
 			authorizeSuccess,
 			isAuthorizing,
 			isRedirectingToWpAdmin,
-		} = this.props.jetpackConnectAuthorize;
+		} = this.props.authorizationData;
 		const { blogname } = queryObject;
 		const redirectTo = addQueryArgs( queryObject, window.location.href );
 		const backToWpAdminLink = (
@@ -508,7 +509,7 @@ class LoggedInForm extends Component {
 	}
 
 	renderStateAction() {
-		const { authorizeSuccess, siteReceived } = this.props.jetpackConnectAuthorize;
+		const { authorizeSuccess, siteReceived } = this.props.authorizationData;
 		if (
 			this.props.isFetchingAuthorizationSite ||
 			this.isAuthorizing() ||
@@ -553,6 +554,7 @@ class LoggedInForm extends Component {
 
 export default connect(
 	state => ( {
+		authorizationData: getAuthorizationData( state ),
 		redirectAfterAuth: getJetpackConnectRedirectAfterAuth( state ),
 	} ),
 	{
