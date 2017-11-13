@@ -1,15 +1,13 @@
+/** @format */
 /**
  * External dependencies
- *
- * @format
  */
-
 import page from 'page';
 
 /**
  * Internal dependencies
  */
-import { siteSelection, navigation } from 'my-sites/controller';
+import { navigation, siteSelection } from 'my-sites/controller';
 import pagesController from './controller';
 import config from 'config';
 

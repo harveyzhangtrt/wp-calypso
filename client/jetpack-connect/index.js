@@ -62,7 +62,6 @@ export default function() {
 	);
 
 	page( '/jetpack/connect/plans/:site', siteSelection, controller.plansSelection );
-
 	page( '/jetpack/connect/plans/:interval/:site', siteSelection, controller.plansSelection );
 
 	page( '/jetpack/sso/:siteId?/:ssoNonce?', controller.sso );

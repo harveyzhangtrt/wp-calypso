@@ -1,9 +1,8 @@
-/**
- * External Dependencies
- *
- * @format
- */
+/** @format */
 
+/**
+ * External dependencies
+ */
 import config from 'config';
 import page from 'page';
 

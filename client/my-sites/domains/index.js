@@ -1,23 +1,21 @@
+/** @format */
 /**
  * External dependencies
- *
- * @format
  */
-
 import page from 'page';
 
 /**
  * Internal dependencies
  */
-import { siteSelection, navigation, jetPackWarning, sites } from 'my-sites/controller';
+import { jetPackWarning, navigation, siteSelection, sites } from 'my-sites/controller';
 import domainsController from './controller';
 import domainManagementController from './domain-management/controller';
 import SiftScience from 'lib/siftscience';
 import config from 'config';
 import paths from './paths';
 
-function registerMultiPage( { paths, handlers } ) {
-	paths.forEach( path => page( path, ...handlers ) );
+function registerMultiPage( { paths: givenPaths, handlers } ) {
+	givenPaths.forEach( path => page( path, ...handlers ) );
 }
 
 function getCommonHandlers(
@@ -166,10 +164,10 @@ export default function() {
 
 		page(
 			'/domains/add/transfer',
-			controller.siteSelection,
+			siteSelection,
 			domainsController.domainsAddHeader,
-			controller.jetPackWarning,
-			controller.sites
+			jetPackWarning,
+			sites
 		);
 
 		page(
@@ -229,10 +227,10 @@ export default function() {
 
 		page(
 			'/domains/add/transfer/:domain',
-			controller.siteSelection,
-			controller.navigation,
+			siteSelection,
+			navigation,
 			domainsController.redirectIfNoSite( '/domains/add/transfer' ),
-			controller.jetPackWarning,
+			jetPackWarning,
 			domainsController.transferDomain
 		);
 	}

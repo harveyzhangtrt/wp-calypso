@@ -1,7 +1,7 @@
+/** @format */
+
 /**
- * External Dependencies
- *
- * @format
+ * External dependencies
  */
 
 import page from 'page';
@@ -21,6 +21,7 @@ import {
 	isJetpackModuleActive,
 	isJetpackSite,
 	isRequestingSites,
+	getPrimaryDomainBySiteId,
 } from 'state/sites/selectors';
 import { getSelectedSite, getSelectedSiteId } from 'state/ui/selectors';
 import { setSelectedSiteId, setSection, setAllSitesSelected } from 'state/ui/actions';
@@ -59,7 +60,6 @@ import {
 import SitesComponent from 'my-sites/sites';
 import { isATEnabled } from 'lib/automated-transfer';
 import { warningNotice } from 'state/notices/actions';
-import { getPrimaryDomainBySiteId } from 'state/selectors';
 
 /*
  * @FIXME Shorthand, but I might get rid of this.
@@ -297,15 +297,15 @@ function showMissingPrimaryError( currentUser, dispatch ) {
 }
 
 // Clears selected site from global redux state
-export const noSite = ( context, next ) => {
+export function noSite( context, next ) {
 	context.store.dispatch( setSelectedSiteId( null ) );
 	return next();
-};
+}
 
 /*
  * Set up site selection based on last URL param and/or handle no-sites error cases
  */
-export const siteSelection = ( context, next ) => {
+export function siteSelection( context, next ) {
 	const { getState, dispatch } = getStore( context );
 	const siteFragment = context.params.site || route.getSiteFragment( context.path );
 	const basePath = route.sectionify( context.path, siteFragment );
@@ -423,9 +423,9 @@ export const siteSelection = ( context, next ) => {
 		} );
 	}
 	next();
-};
+}
 
-export const jetpackModuleActive = ( moduleId, redirect ) => {
+export function jetpackModuleActive( moduleId, redirect ) {
 	return function( context, next ) {
 		const { getState } = getStore( context );
 		const siteId = getSelectedSiteId( getState() );
@@ -442,14 +442,14 @@ export const jetpackModuleActive = ( moduleId, redirect ) => {
 			page.redirect( 'string' === typeof redirect ? redirect : '/stats' );
 		}
 	};
-};
+}
 
-export const makeNavigation = ( context, next ) => {
+export function makeNavigation( context, next ) {
 	context.secondary = createNavigation( context );
 	next();
-};
+}
 
-export const navigation = ( context, next ) => {
+export function navigation( context, next ) {
 	// Render the My Sites navigation in #secondary
 	renderWithReduxStore(
 		createNavigation( context ),
@@ -457,9 +457,9 @@ export const navigation = ( context, next ) => {
 		context.store
 	);
 	next();
-};
+}
 
-export const jetPackWarning = ( context, next ) => {
+export function jetPackWarning( context, next ) {
 	const { getState } = getStore( context );
 	const Main = require( 'components/main' );
 	const JetpackManageErrorPage = require( 'my-sites/jetpack-manage-error-page' );
@@ -479,9 +479,9 @@ export const jetPackWarning = ( context, next ) => {
 	} else {
 		next();
 	}
-};
+}
 
-export const sites = context => {
+export function sites( context ) {
 	const { dispatch } = getStore( context );
 	if ( context.query.verified === '1' ) {
 		notices.success(
@@ -501,7 +501,7 @@ export const sites = context => {
 		document.getElementById( 'primary' ),
 		context.store
 	);
-};
+}
 
 /**
  * Middleware that adds the site selector screen to the layout
@@ -514,7 +514,7 @@ export const sites = context => {
  * @param {object} context -- Middleware context
  * @param {function} next -- Call next middleware in chain
  */
-export const makeSites = ( context, next ) => {
+export function makeSites( context, next ) {
 	context.store.dispatch( setLayoutFocus( 'content' ) );
 	context.store.dispatch(
 		setSection( {
@@ -525,4 +525,4 @@ export const makeSites = ( context, next ) => {
 
 	context.primary = createSitesComponent( context );
 	next();
-};
+}

@@ -1,15 +1,13 @@
+/** @format */
 /**
  * External dependencies
- *
- * @format
  */
-
 import page from 'page';
 
 /**
  * Internal dependencies
  */
-import { siteSelection, navigation, sites } from 'my-sites/controller';
+import { navigation, siteSelection, sites } from 'my-sites/controller';
 import config from 'config';
 import pluginsController from './controller';
 import { recordTracksEvent } from 'state/analytics/actions';

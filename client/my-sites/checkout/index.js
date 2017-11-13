@@ -1,15 +1,13 @@
+/** @format */
 /**
  * External dependencies
- *
- * @format
  */
-
 import page from 'page';
 
 /**
  * Internal dependencies
  */
-import { siteSelection, noSite } from 'my-sites/controller';
+import { noSite, siteSelection } from 'my-sites/controller';
 import checkoutController from './controller';
 import SiftScience from 'lib/siftscience';
 
@@ -26,7 +24,7 @@ export default function() {
 
 	page(
 		'/checkout/thank-you/:site/:receiptId/with-gsuite/:gsuiteReceiptId',
-		controller.siteSelection,
+		siteSelection,
 		checkoutController.checkoutThankYou
 	);
 
@@ -54,7 +52,7 @@ export default function() {
 
 	page(
 		'/checkout/:site/with-gsuite/:domain/:receiptId?',
-		controller.siteSelection,
+		siteSelection,
 		checkoutController.gsuiteNudge
 	);
 

@@ -15,6 +15,7 @@ import { get, isUndefined } from 'lodash';
 import Card from 'components/card';
 import CommentActions from 'my-sites/comments/comment/comment-actions';
 import CommentContent from 'my-sites/comments/comment/comment-content';
+import CommentEdit from 'my-sites/comments/comment/comment-edit';
 import CommentHeader from 'my-sites/comments/comment/comment-header';
 import CommentReply from 'my-sites/comments/comment/comment-reply';
 import QueryComment from 'components/data/query-comment';
@@ -30,9 +31,8 @@ export class Comment extends Component {
 		isPostView: PropTypes.bool,
 		isSelected: PropTypes.bool,
 		refreshCommentData: PropTypes.bool,
-		removeFromPersisted: PropTypes.func,
 		toggleSelected: PropTypes.func,
-		updatePersisted: PropTypes.func,
+		updateLastUndo: PropTypes.func,
 	};
 
 	state = {
@@ -70,6 +70,13 @@ export class Comment extends Component {
 		}
 	};
 
+	toggleEditMode = () =>
+		this.setState( ( { isEditMode } ) => ( {
+			isEditMode: ! isEditMode,
+			isExpanded: ! isEditMode,
+			isReplyVisible: false,
+		} ) );
+
 	toggleExpanded = () => {
 		if ( ! this.props.isLoading && ! this.state.isEditMode ) {
 			this.setState( ( { isExpanded } ) => ( {
@@ -96,9 +103,8 @@ export class Comment extends Component {
 			isPostView,
 			isSelected,
 			refreshCommentData,
-			removeFromPersisted,
 			siteId,
-			updatePersisted,
+			updateLastUndo,
 		} = this.props;
 		const { isEditMode, isExpanded, isReplyVisible } = this.state;
 
@@ -107,6 +113,7 @@ export class Comment extends Component {
 		const classes = classNames( 'comment', {
 			'is-bulk-mode': isBulkMode,
 			'is-collapsed': ! isExpanded,
+			'is-edit-mode': isEditMode,
 			'is-expanded': isExpanded,
 			'is-placeholder': isLoading,
 			'is-pending': commentIsPending,
@@ -136,13 +143,18 @@ export class Comment extends Component {
 
 						{ showActions && (
 							<CommentActions
-								{ ...{ commentId, removeFromPersisted, updatePersisted } }
+								{ ...{ commentId, updateLastUndo } }
+								toggleEditMode={ this.toggleEditMode }
 								toggleReply={ this.toggleReply }
 							/>
 						) }
 
 						{ isExpanded && ! isBulkMode && <CommentReply { ...{ commentId, isReplyVisible } } /> }
 					</div>
+				) }
+
+				{ isEditMode && (
+					<CommentEdit { ...{ commentId } } toggleEditMode={ this.toggleEditMode } />
 				) }
 			</Card>
 		);

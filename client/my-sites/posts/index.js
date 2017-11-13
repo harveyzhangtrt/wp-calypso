@@ -1,7 +1,7 @@
+/** @format */
+
 /**
- * External Dependencies
- *
- * @format
+ * External dependencies
  */
 
 import page from 'page';
@@ -9,7 +9,7 @@ import page from 'page';
 /**
  * Internal Dependencies
  */
-import { siteSelection, navigation } from 'my-sites/controller';
+import { navigation, siteSelection } from 'my-sites/controller';
 import postsController from './controller';
 
 export default function() {

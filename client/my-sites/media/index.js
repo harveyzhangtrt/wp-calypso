@@ -1,7 +1,7 @@
+/** @format */
+
 /**
  * External dependencies
- *
- * @format
  */
 
 import page from 'page';
@@ -9,7 +9,7 @@ import page from 'page';
 /**
  * Internal dependencies
  */
-import { siteSelection, sites, navigation } from 'my-sites/controller';
+import { navigation, siteSelection, sites } from 'my-sites/controller';
 import mediaController from './controller';
 import config from 'config';
 

@@ -1,16 +1,14 @@
+/** @format */
 /**
  * External dependencies
- *
- * @format
  */
-
 import page from 'page';
 
 /**
  * Internal dependencies
  */
 import config from 'config';
-import { siteSelection, navigation, sites } from 'my-sites/controller';
+import { navigation, siteSelection, sites } from 'my-sites/controller';
 import controller from 'my-sites/site-settings/controller';
 import settingsController from 'my-sites/site-settings/settings-controller';
 import { reasonComponents as reasons } from './disconnect-site';
@@ -48,21 +46,18 @@ export default function() {
 	);
 
 	const reasonSlugs = Object.keys( reasons );
-	page(
-		`/settings/disconnect-site/:step(${ [ ...reasonSlugs, 'confirm' ].join( '|' ) })?`,
-			sites
-	);
+	page( `/settings/disconnect-site/:step(${ [ ...reasonSlugs, 'confirm' ].join( '|' ) })?`, sites );
 
 	page(
 		`/settings/disconnect-site/:reason(${ reasonSlugs.join( '|' ) })?/:site_id`,
-			siteSelection,
+		siteSelection,
 		settingsController.setScroll,
 		controller.disconnectSite
 	);
 
 	page(
 		'/settings/disconnect-site/confirm/:site_id',
-			siteSelection,
+		siteSelection,
 		settingsController.setScroll,
 		controller.disconnectSiteConfirm
 	);

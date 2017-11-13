@@ -1,9 +1,7 @@
+/** @format */
 /**
  * External dependencies
- *
- * @format
  */
-
 import page from 'page';
 
 /**
@@ -11,7 +9,7 @@ import page from 'page';
  */
 import controller from './controller';
 import settingsController from 'my-sites/site-settings/settings-controller';
-import { siteSelection, navigation } from 'my-sites/controller';
+import { navigation, siteSelection } from 'my-sites/controller';
 
 export default function() {
 	page(
