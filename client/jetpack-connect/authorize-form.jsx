@@ -15,7 +15,7 @@ import { get, includes } from 'lodash';
 import Main from 'components/main';
 import LoggedOutFormLinks from 'components/logged-out-form/links';
 import {
-	getAuthorizationData,
+	getAuthorizationRemoteQueryData,
 	getAuthorizationRemoteSite,
 	isCalypsoStartedConnection,
 	hasXmlrpcError,
@@ -43,11 +43,9 @@ class JetpackConnectAuthorizeForm extends Component {
 		isAlreadyOnSitesList: PropTypes.bool,
 		isFetchingAuthorizationSite: PropTypes.bool,
 		isFetchingSites: PropTypes.bool,
-		jetpackConnectAuthorize: PropTypes.shape( {
-			queryObject: PropTypes.shape( {
-				client_id: PropTypes.string,
-				from: PropTypes.string,
-			} ),
+		authorizationRemoteQueryData: PropTypes.shape( {
+			client_id: PropTypes.string,
+			from: PropTypes.string,
 		} ).isRequired,
 		recordTracksEvent: PropTypes.func,
 		setTracksAnonymousUserId: PropTypes.func,
@@ -59,7 +57,7 @@ class JetpackConnectAuthorizeForm extends Component {
 
 	componentWillMount() {
 		// set anonymous ID for cross-system analytics
-		const queryObject = this.props.jetpackConnectAuthorize.queryObject;
+		const queryObject = this.props.authorizationRemoteQueryData;
 		if ( queryObject && queryObject._ui && 'anon' === queryObject._ut ) {
 			this.props.setTracksAnonymousUserId( queryObject._ui );
 		}
@@ -68,7 +66,7 @@ class JetpackConnectAuthorizeForm extends Component {
 
 	isSSO() {
 		const cookies = cookie.parse( document.cookie );
-		const query = this.props.jetpackConnectAuthorize.queryObject;
+		const query = this.props.authorizationRemoteQueryData;
 		return (
 			query.from &&
 			'sso' === query.from &&
@@ -80,7 +78,7 @@ class JetpackConnectAuthorizeForm extends Component {
 
 	isWoo() {
 		const wooSlugs = [ 'woocommerce-setup-wizard', 'woocommerce-services' ];
-		const jetpackConnectSource = get( this.props, 'jetpackConnectAuthorize.queryObject.from' );
+		const jetpackConnectSource = get( this.props, 'authorizationRemoteQueryData.from' );
 
 		return includes( wooSlugs, jetpackConnectSource );
 	}
@@ -116,13 +114,17 @@ class JetpackConnectAuthorizeForm extends Component {
 	}
 
 	render() {
-		const { queryObject } = this.props.jetpackConnectAuthorize;
+		const { authorizationRemoteQueryData } = this.props;
 
-		if ( typeof queryObject === 'undefined' ) {
+		if ( typeof authorizationRemoteQueryData === 'undefined' ) {
 			return this.renderNoQueryArgsError();
 		}
 
-		if ( queryObject && queryObject.already_authorized && ! this.props.isAlreadyOnSitesList ) {
+		if (
+			authorizationRemoteQueryData &&
+			authorizationRemoteQueryData.already_authorized &&
+			! this.props.isAlreadyOnSitesList
+		) {
 			this.renderForm();
 		}
 
@@ -150,7 +152,7 @@ export default connect(
 			isAlreadyOnSitesList: isRemoteSiteOnSitesList( state ),
 			isFetchingAuthorizationSite: isRequestingSite( state, siteId ),
 			isFetchingSites: isRequestingSites( state ),
-			jetpackConnectAuthorize: getAuthorizationData( state ),
+			authorizationRemoteQueryData: getAuthorizationRemoteQueryData( state ),
 			requestHasExpiredSecretError,
 			requestHasXmlrpcError,
 			siteSlug,
