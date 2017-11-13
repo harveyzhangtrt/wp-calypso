@@ -18,7 +18,6 @@ import {
 	getAuthorizationData,
 	hasXmlrpcError,
 	hasExpiredSecretError,
-	getUserAlreadyConnected,
 } from 'state/jetpack-connect/selectors';
 import { getCurrentUser } from 'state/current-user/selectors';
 import { recordTracksEvent, setTracksAnonymousUserId } from 'state/analytics/actions';
@@ -133,7 +132,6 @@ export default connect(
 			requestHasExpiredSecretError,
 			requestHasXmlrpcError,
 			user: getCurrentUser( state ),
-			userAlreadyConnected: getUserAlreadyConnected( state ),
 		};
 	},
 	{
